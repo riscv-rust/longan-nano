@@ -5,3 +5,9 @@ authors = ["Vadim Kaushan <admin@disasm.info>"]
 edition = "2018"
 
 [dependencies]
+gd32vf103xx-hal = "0.1.0"
+
+[dev-dependencies]
+riscv-rt = "0.6.1"
+embedded-hal = "0.2.3"
+panic-halt = "0.2.0"
