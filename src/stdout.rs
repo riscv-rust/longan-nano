@@ -11,6 +11,7 @@ use gd32vf103xx_hal::{
     pac::USART0,
     prelude::*
 };
+use gd32vf103xx_hal::serial::{Config, Parity, StopBits};
 
 
 static mut STDOUT: Option<SerialWrapper> = None;
@@ -46,8 +47,13 @@ pub fn configure<X, Y>(
 ) where X: Active, Y: Active
 {
     let tx = tx.into_alternate_push_pull();
-    let rx = rx.into_alternate_push_pull();
-    let serial = Serial::new(uart, (tx, rx), baud_rate, clocks);
+    let rx = rx.into_floating_input();
+    let config = Config {
+        baudrate: baud_rate,
+        parity: Parity::ParityNone,
+        stopbits: StopBits::STOP1
+    };
+    let serial = Serial::usart0(uart, (tx, rx), config, clocks);
     let (tx, _) = serial.split();
 
     interrupt::free(|_| {
