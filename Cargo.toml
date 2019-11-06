@@ -13,5 +13,5 @@ riscv = "0.5.4"
 [dev-dependencies]
 riscv-rt = "0.6.1"
 panic-halt = "0.2.0"
-st7735-lcd = "0.6.0"
+st7735-lcd = "0.6.1"
 embedded-graphics = "0.5"
