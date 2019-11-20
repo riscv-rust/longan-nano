@@ -1,0 +1,25 @@
+language: rust
+
+rust:
+  - nightly
+  - stable
+
+if: (branch = staging OR branch = trying OR branch = master) OR (type = pull_request AND branch = master)
+
+
+install:
+  - rustup target add riscv32imac-unknown-none-elf
+
+script:
+  - cargo build --target riscv32imac-unknown-none-elf
+  - cargo build --examples --target riscv32imac-unknown-none-elf
+
+branches:
+  only:
+    - master
+    - staging
+    - trying
+
+notifications:
+  email:
+    on_success: never
