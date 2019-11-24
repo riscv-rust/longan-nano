@@ -45,7 +45,7 @@ fn main() -> ! {
     let sck = gpioa.pa5.into_alternate_push_pull();
     let miso = gpioa.pa6.into_floating_input();
     let mosi = gpioa.pa7.into_alternate_push_pull();
-    let spi0 = Spi::spi0(dp.SPI0, (sck, miso, mosi), MODE_0, 1.mhz(), &clocks);
+    let spi0 = Spi::spi0(dp.SPI0, (sck, miso, mosi), MODE_0, 16.mhz(), &clocks);
 
     let dc = gpiob.pb0.into_push_pull_output();
     let rst = gpiob.pb1.into_push_pull_output();
