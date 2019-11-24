@@ -6,7 +6,6 @@ use panic_halt as _;
 use riscv_rt::entry;
 use gd32vf103xx_hal::pac as pac;
 use gd32vf103xx_hal::prelude::*;
-use gd32vf103xx_hal::clock::Clocks;
 use gd32vf103xx_hal::spi::{Spi, MODE_0};
 use embedded_hal::digital::v2::OutputPin;
 use embedded_hal::blocking::delay::DelayMs;
@@ -35,7 +34,11 @@ impl DelayMs<u8> for Delay {
 #[entry]
 fn main() -> ! {
     let dp = pac::Peripherals::take().unwrap();
-    let clocks = Clocks;
+
+    // Configure clocks
+    let rcu = dp.RCU.constrain();
+    let clocks = rcu.cctl.ext_hf_clock(8.mhz()).sysclk(108.mhz()).freese();
+
     let gpioa = dp.GPIOA.split();
     let gpiob = dp.GPIOB.split();
 

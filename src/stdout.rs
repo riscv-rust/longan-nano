@@ -7,7 +7,7 @@ use gd32vf103xx_hal::{
     serial::{Serial, Tx},
     gpio::{Active, gpioa::{PA10, PA9}},
     time::Bps,
-    clock::Clocks,
+    rcu::Clocks,
     pac::USART0,
     prelude::*
 };
