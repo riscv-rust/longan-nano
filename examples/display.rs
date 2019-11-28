@@ -37,7 +37,7 @@ fn main() -> ! {
 
     // Configure clocks
     let rcu = dp.RCU.constrain();
-    let clocks = rcu.cctl.ext_hf_clock(8.mhz()).sysclk(108.mhz()).freese();
+    let clocks = rcu.cctl.ext_hf_clock(8.mhz()).sysclk(108.mhz()).freeze();
 
     let gpioa = dp.GPIOA.split();
     let gpiob = dp.GPIOB.split();

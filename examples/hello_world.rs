@@ -19,7 +19,7 @@ fn main() -> ! {
     let clocks = rcu.cctl
         .ext_hf_clock(8.mhz())
         .sysclk(108.mhz())
-        .freese();
+        .freeze();
 
     longan_nano::stdout::configure(dp.USART0, gpioa.pa9, gpioa.pa10, 115_200.bps(), clocks);
 

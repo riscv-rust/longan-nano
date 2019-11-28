@@ -67,7 +67,7 @@ fn main() -> ! {
 
     // Configure clocks
     let rcu = p.RCU.constrain();
-    let clocks = rcu.cctl.freese();
+    let clocks = rcu.cctl.freeze();
 
     // Configure UART for stdout
     longan_nano::stdout::configure(p.USART0, gpioa.pa9, gpioa.pa10, 115_200.bps(), clocks);
