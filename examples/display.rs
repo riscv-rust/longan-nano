@@ -7,8 +7,8 @@ use riscv_rt::entry;
 use gd32vf103xx_hal::pac as pac;
 use gd32vf103xx_hal::prelude::*;
 use gd32vf103xx_hal::spi::{Spi, MODE_0};
+use gd32vf103xx_hal::delay::McycleDelay;
 use embedded_hal::digital::v2::OutputPin;
-use embedded_hal::blocking::delay::DelayMs;
 use st7735_lcd::{ST7735, Orientation};
 use embedded_graphics::prelude::*;
 use embedded_graphics::fonts::Font6x8;
@@ -16,36 +16,20 @@ use embedded_graphics::pixelcolor::Rgb565;
 use embedded_graphics::primitives::Rectangle;
 
 
-struct Delay;
-
-impl DelayMs<u8> for Delay {
-    fn delay_ms(&mut self, ms: u8) {
-        let dt = (ms as u64) * 1000;
-        let t0 = riscv::register::mcycle::read64();
-        loop {
-            let t = riscv::register::mcycle::read64();
-            if (t - t0) > dt {
-                break;
-            }
-        }
-    }
-}
-
 #[entry]
 fn main() -> ! {
     let dp = pac::Peripherals::take().unwrap();
 
     // Configure clocks
-    let rcu = dp.RCU.constrain();
-    let clocks = rcu.cctl.ext_hf_clock(8.mhz()).sysclk(108.mhz()).freeze();
+    let mut rcu = dp.RCU.configure().ext_hf_clock(8.mhz()).sysclk(108.mhz()).freeze();
 
-    let gpioa = dp.GPIOA.split();
-    let gpiob = dp.GPIOB.split();
+    let gpioa = dp.GPIOA.split(&mut rcu);
+    let gpiob = dp.GPIOB.split(&mut rcu);
 
     let sck = gpioa.pa5.into_alternate_push_pull();
     let miso = gpioa.pa6.into_floating_input();
     let mosi = gpioa.pa7.into_alternate_push_pull();
-    let spi0 = Spi::spi0(dp.SPI0, (sck, miso, mosi), MODE_0, 16.mhz(), &clocks);
+    let spi0 = Spi::spi0(dp.SPI0, (sck, miso, mosi), MODE_0, 16.mhz(), &mut rcu);
 
     let dc = gpiob.pb0.into_push_pull_output();
     let rst = gpiob.pb1.into_push_pull_output();
@@ -53,7 +37,7 @@ fn main() -> ! {
     cs.set_low().unwrap();
 
     let mut lcd = ST7735::new(spi0, dc, rst, false, true);
-    let mut delay = Delay;
+    let mut delay = McycleDelay::new(&rcu.clocks);
     lcd.init(&mut delay).unwrap();
     lcd.set_orientation(&Orientation::Landscape).unwrap();
     lcd.set_offset(0, 26);

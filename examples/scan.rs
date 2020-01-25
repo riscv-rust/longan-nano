@@ -63,14 +63,13 @@ enum ScanState {
 #[entry]
 fn main() -> ! {
     let p = Peripherals::take().unwrap();
-    let gpioa = p.GPIOA.split();
 
     // Configure clocks
-    let rcu = p.RCU.constrain();
-    let clocks = rcu.cctl.freeze();
+    let mut rcu = p.RCU.configure().freeze();
 
     // Configure UART for stdout
-    longan_nano::stdout::configure(p.USART0, gpioa.pa9, gpioa.pa10, 115_200.bps(), clocks);
+    let gpioa = p.GPIOA.split(&mut rcu);
+    longan_nano::stdout::configure(p.USART0, gpioa.pa9, gpioa.pa10, 115_200.bps(), &mut rcu);
 
     sprintln!("scan started");
 
