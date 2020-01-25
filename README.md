@@ -8,6 +8,38 @@
 
 ## [Documentation](https://docs.rs/crate/longan-nano)
 
+## Getting started
+
+### Installing dependencies
+
+- Rust 1.36 or a newer toolchain. e.g. `rustup default stable`
+
+- `rust-std` components (pre-compiled `core` crate) for the RISC-V target. Run:
+
+``` console
+rustup target add riscv32imac-unknown-none-elf
+```
+
+- RISC-V toolchain ([e.g. from SiFive](https://static.dev.sifive.com/dev-tools/riscv64-unknown-elf-gcc-8.1.0-2019.01.0-x86_64-linux-ubuntu14.tar.gz))
+
+- [openocd for GD32VF103](https://github.com/riscv-mcu/riscv-openocd)
+
+### Running the examples
+
+Start openocd:
+```sh
+/path/to/openocd -f sipeed-jtag.cfg -f openocd.cfg
+```
+
+Run one of the examples:
+```sh
+cargo run --example blinky
+```
+or
+```sh
+cargo run --release --example display
+```
+
 ## License
 
 Copyright 2018-2019 [RISC-V team][team]
