@@ -7,7 +7,7 @@ use riscv_rt::entry;
 use gd32vf103xx_hal as hal;
 use hal::pac as pac;
 use gd32vf103xx_hal::gpio::GpioExt;
-use longan_nano::led::Led;
+use longan_nano::led::{Led, rgb};
 use gd32vf103xx_hal::rcu::RcuExt;
 use gd32vf103xx_hal::delay::McycleDelay;
 use embedded_hal::blocking::delay::DelayMs;
@@ -20,14 +20,8 @@ fn main() -> ! {
     let gpioa = dp.GPIOA.split(&mut rcu);
     let gpioc = dp.GPIOC.split(&mut rcu);
 
-    let mut led_red = gpioc.pc13.into_push_pull_output();
-    led_red.off();
-    let mut led_green = gpioa.pa1.into_push_pull_output();
-    led_green.off();
-    let mut led_blue = gpioa.pa2.into_push_pull_output();
-    led_blue.off();
-
-    let leds: [&mut dyn Led; 3] = [&mut led_red, &mut led_green, &mut led_blue];
+    let (mut red, mut green, mut blue) = rgb(gpioc.pc13, gpioa.pa1, gpioa.pa2);
+    let leds: [&mut dyn Led; 3] = [&mut red, &mut green, &mut blue];
 
     let mut delay = McycleDelay::new(&rcu.clocks);
 
