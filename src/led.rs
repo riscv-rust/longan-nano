@@ -1,4 +1,4 @@
-//! On-board RGB led
+//! On-board RGB leds
 //!
 //! - Red = PC13
 //! - Green = PA1
