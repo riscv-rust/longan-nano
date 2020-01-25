@@ -42,7 +42,7 @@ cargo run --release --example display
 
 ## License
 
-Copyright 2018-2019 [RISC-V team][team]
+Copyright 2019-2020 [RISC-V team][team]
 
 Permission to use, copy, modify, and/or distribute this software for any purpose
 with or without fee is hereby granted, provided that the above copyright notice
