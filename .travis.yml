@@ -12,7 +12,7 @@ install:
 
 script:
   - cargo build --target riscv32imac-unknown-none-elf
-  - cargo build --examples --target riscv32imac-unknown-none-elf --release
+  - cargo build --examples --features lcd --target riscv32imac-unknown-none-elf --release
 
 branches:
   only:
