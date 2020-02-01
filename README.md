@@ -37,7 +37,7 @@ cargo run --example blinky
 ```
 or
 ```sh
-cargo run --release --example display
+cargo run --release --example ferris --features lcd
 ```
 
 ## License
