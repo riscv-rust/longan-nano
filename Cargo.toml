@@ -31,3 +31,6 @@ required-features = ["lcd"]
 [[example]]
 name = "ferris"
 required-features = ["lcd"]
+
+[package.metadata.docs.rs]
+features = ['lcd']
