@@ -23,3 +23,11 @@ embedded-graphics = "0.5"
 
 [features]
 lcd = ["st7735-lcd"]
+
+[[example]]
+name = "display"
+required-features = ["lcd"]
+
+[[example]]
+name = "ferris"
+required-features = ["lcd"]
