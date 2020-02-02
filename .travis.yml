@@ -11,8 +11,8 @@ install:
   - rustup target add riscv32imac-unknown-none-elf
 
 script:
-  - cargo build --target riscv32imac-unknown-none-elf
-  - cargo build --target riscv32imac-unknown-none-elf --examples --features lcd --release
+  - cargo check --all-features
+  - cargo build --target riscv32imac-unknown-none-elf --examples --all-features --release
 
 branches:
   only:
