@@ -40,6 +40,78 @@ or
 cargo run --release --example ferris --features lcd
 ```
 
+### Using RV-LINK for Flashing and Debugging
+
+[RV-LINK](https://gitee.com/zoomdy/RV-LINK) is a chinese firmware which turns a
+Longan Nano board into a debug probe. Using it, you can use one Longan Nano to
+debug another one. It can be built & flashed via
+[PlatformIO](https://platformio.org/). Checkout the latest version to ensure
+that the code compiles:
+
+```
+> git clone https://gitee.com/zoomdy/RV-LINK
+> cd RV-LINK
+> git tag 
+v0.0.1
+v0.1
+v0.2 # <- seems to be the latest tag, so lets checkout this
+> git checkout tags/v0.2 
+```
+
+We will build the RV-LINK firmware now. After that, we have to flash it to the
+board. To do so the board needs to be in bootloader mode. To enter this mode,
+press the boot button, press the reset button, release the reset button and
+finally release the boot button while the board is plugged in.
+
+```
+> pio run -t upload # put the board in bootloader mode before
+```
+
+Once RV-LINK is flashed to your probe, connect the eight debug pins from your
+probe with the debug pins from your debug target. Ensure that you connect the
+pins according to this table:
+
+| Probe Pin | Target Pin |
+| ---       | ---        |
+| JTDO      | JTDO       |
+| JTDI      | JTDI       |
+| JTCK      | JTCK       |
+| JTMS      | JTMS       |
+| 3V3       | 3V3        |
+| GND       | GND        |
+
+After you plugged in the debug probe to your host, a new serialport shows up. You
+can connect GDB to this serialport as `extended-remote`. I prefer to refer to
+the serialport via the udev assigned id symlink, but you could also use
+`/dev/ttyACM0` or `COMx` if you run Windows.
+
+```
+> gdb
+(gdb) target extended-remote /dev/serial/by-id/usb-RV-LINK_Longan_Nano_GD32XXX-3.0.0-7z8x9yer-if00
+```
+
+To flash the firmware, open it up in gdb, connect the probe and run `load`:
+
+```
+> gdb target/remote/debug/demo
+(gdb) target extended-remote /dev/ttyACM0
+(gdb) monitor reset halt
+(gdb) load
+(gdb) monitor reset
+```
+
+To improve your workflow, you can but the aforementioned GDB commands in a
+`debug.gdb` file and add these lines to `.cargo/config`:
+
+```
+[target.riscv32imac-unknown-none-elf]
+runner = 'gdb -command=debug.gdb'
+```
+
+This way `cargo run --target riscv32imac-unknown-none-elf` will automatically
+launch GDB, flash your firmware on the target and provide you with a full debug
+environment.
+
 ## License
 
 Copyright 2019-2020 [RISC-V team][team]
