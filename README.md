@@ -42,10 +42,11 @@ cargo run --release --example ferris --features lcd
 
 ### Using RV-LINK for Flashing and Debugging
 
-[RV-LINK](https://gitee.com/zoomdy/RV-LINK) is a chinese firmware which turns a
-Longan Nano board into a debug probe. Using it, you can use one Longan Nano to
-debug another one. It can be built & flashed via
-[PlatformIO](https://platformio.org/). Checkout the latest version to ensure
+[RV-LINK](https://gitee.com/zoomdy/RV-LINK) is a Chinese firmware, similar to
+[Black Magic Probe (BMP)](https://github.com/blacksphere/blackmagic/wiki). It
+supports the Longan Nano, allowing to use one Longan Nano board as a debug
+probe for another one. It can be built & flashed via
+[PlatformIO](https://platformio.org/). Check out the latest version to ensure
 that the code compiles:
 
 ```
@@ -54,22 +55,25 @@ that the code compiles:
 > git tag 
 v0.0.1
 v0.1
-v0.2 # <- seems to be the latest tag, so lets checkout this
+v0.2 # <- seems to be the latest tag, so let's check this out
 > git checkout tags/v0.2 
 ```
 
-We will build the RV-LINK firmware now. After that, we have to flash it to the
-board. To do so the board needs to be in bootloader mode. To enter this mode,
-press the boot button, press the reset button, release the reset button and
-finally release the boot button while the board is plugged in.
+PlatformIO allows building & flashing of firmware with a single command. To do
+so, the board needs to be in bootloader mode (DFU mode). The board boots to
+bootloader mode if the bootloader button is pressed while powering it up (e.g.
+by plugging it in). However, it is also possible to enter bootloader mode
+without un- and replugging the board: press the boot button, press the reset
+button, release the reset button and finally release the boot button while the
+board is plugged in.
 
 ```
 > pio run -t upload # put the board in bootloader mode before
 ```
 
-Once RV-LINK is flashed to your probe, connect the eight debug pins from your
-probe with the debug pins from your debug target. Ensure that you connect the
-pins according to this table:
+Once RV-LINK is flashed to your probe, connect the eight debug pins on the
+probe with the debug pins on the debug target. Ensure that you connect the pins
+according to this table:
 
 | Probe Pin | Target Pin |
 | ---       | ---        |
@@ -80,17 +84,19 @@ pins according to this table:
 | 3V3       | 3V3        |
 | GND       | GND        |
 
-After you plugged in the debug probe to your host, a new serialport shows up. You
-can connect GDB to this serialport as `extended-remote`. I prefer to refer to
-the serialport via the udev assigned id symlink, but you could also use
-`/dev/ttyACM0` or `COMx` if you run Windows.
+After you connected the debug probe to your host, a new serial port shows up.
+You can connect GDB to this serial port as an `extended-remote`. For
+predictable behavior when multiple serial devices are present (and hence
+`/dev/ttyACM0` is not necessarily the RV-LINK device),
+[udev](https://www.freedesktop.org/wiki/Software/systemd/) offers id symlinks.
+However you may also use `/dev/ttyACM0` or even `COMx` if you run Windows.
 
 ```
 > gdb
 (gdb) target extended-remote /dev/serial/by-id/usb-RV-LINK_Longan_Nano_GD32XXX-3.0.0-7z8x9yer-if00
 ```
 
-To flash the firmware, open it up in gdb, connect the probe and run `load`:
+To flash the firmware, execute `load` in GDB:
 
 ```
 > gdb target/remote/debug/demo
@@ -100,8 +106,8 @@ To flash the firmware, open it up in gdb, connect the probe and run `load`:
 (gdb) monitor reset
 ```
 
-To improve your workflow, you can but the aforementioned GDB commands in a
-`debug.gdb` file and add these lines to `.cargo/config`:
+To improve your workflow, you can put the aforementioned GDB commands in
+a `debug.gdb` file and add these lines to `.cargo/config`:
 
 ```
 [target.riscv32imac-unknown-none-elf]
