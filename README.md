@@ -118,6 +118,16 @@ This way `cargo run --target riscv32imac-unknown-none-elf` will automatically
 launch GDB, flash your firmware on the target and provide you with a full debug
 environment.
 
+You can infer the current status of the board by observing the blinking pattern
+of the green LED:
+
+| Blink Behavior                             | Probe Status                                           |
+| ---                                        | ---                                                    |
+| Short pulse, on for 100ms, off for 900ms   | GDB is not connected                                   |
+| Slow flashing, on for 500ms, off for 500ms | GDB is connected and the debugged MCU is in halt state |
+| Fast blinking, on for 100ms, off for 100ms | GDB is connected, and the debugged MCU is running      |
+| Long pulse, on for 900ms, off for 100ms    | RV-LINK has failed. Retry after resetting RV-LINK      |
+
 ## License
 
 Copyright 2019-2020 [RISC-V team][team]
