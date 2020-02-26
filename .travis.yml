@@ -12,7 +12,7 @@ install:
 
 script:
   - cargo check --all-features
-  - cargo build --target riscv32imac-unknown-none-elf --examples --all-features --release
+  - cargo build --target riscv32imac-unknown-none-elf --examples --all-features
 
 cache: cargo
 
