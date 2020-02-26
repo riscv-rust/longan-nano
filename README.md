@@ -26,6 +26,9 @@ rustup target add riscv32imac-unknown-none-elf
 
 ### Running the examples
 
+If you have a GD32VF103C**B** chip on your board, edit `.cargo/config` and replace
+`memory-c8.x` with `memory-cb.x`.
+
 Start openocd:
 ```sh
 /path/to/openocd -f sipeed-jtag.cfg -f openocd.cfg
