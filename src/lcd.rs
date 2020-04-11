@@ -78,7 +78,7 @@ impl Lcd {
 
     /// Screen width
     pub const fn width(&self) -> u32 {
-        180
+        160
     }
 
     /// Screen height
