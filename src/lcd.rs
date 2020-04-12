@@ -69,7 +69,7 @@ impl Lcd {
         let mut delay = McycleDelay::new(&rcu.clocks);
         lcd.init(&mut delay).unwrap();
         lcd.set_orientation(&Orientation::Landscape).unwrap();
-        lcd.set_offset(0, 26);
+        lcd.set_offset(1, 26);
 
         Lcd {
             driver: lcd
