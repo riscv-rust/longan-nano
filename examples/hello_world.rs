@@ -19,8 +19,10 @@ fn main() -> ! {
         .sysclk(108.mhz())
         .freeze();
 
+    let mut afio = dp.AFIO.constrain(&mut rcu);
+
     let gpioa = dp.GPIOA.split(&mut rcu);
-    longan_nano::stdout::configure(dp.USART0, gpioa.pa9, gpioa.pa10, 115_200.bps(), &mut rcu);
+    longan_nano::stdout::configure(dp.USART0, gpioa.pa9, gpioa.pa10, 115_200.bps(), &mut afio, &mut rcu);
 
     sprintln!("Hello, world");
 

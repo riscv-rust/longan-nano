@@ -4,6 +4,7 @@ use gd32vf103xx_hal::gpio::{Input, Output, Alternate, PushPull, Floating};
 use gd32vf103xx_hal::gpio::gpioa::{PA5, PA6, PA7};
 use gd32vf103xx_hal::gpio::gpiob::{PB0, PB1, PB2};
 use gd32vf103xx_hal::rcu::Rcu;
+use gd32vf103xx_hal::afio::Afio;
 use gd32vf103xx_hal::spi::{Spi, MODE_0};
 use gd32vf103xx_hal::pac::SPI0;
 use st7735_lcd::{ST7735, Orientation};
@@ -59,8 +60,8 @@ pub struct Lcd {
 
 impl Lcd {
     /// Constructs LCD driver from the required components
-    pub fn new(spi: SPI0, pins: LcdPins, rcu: &mut Rcu) -> Lcd {
-        let spi0 = Spi::spi0(spi, (pins.sck, pins.miso, pins.mosi), MODE_0, 16.mhz(), rcu);
+    pub fn new(spi: SPI0, pins: LcdPins, afio: &mut Afio, rcu: &mut Rcu) -> Lcd {
+        let spi0 = Spi::spi0(spi, (pins.sck, pins.miso, pins.mosi), afio, MODE_0, 16.mhz(), rcu);
 
         let mut cs = pins.cs;
         cs.set_low().unwrap();
