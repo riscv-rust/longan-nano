@@ -21,12 +21,13 @@ fn main() -> ! {
 
     // Configure clocks
     let mut rcu = dp.RCU.configure().ext_hf_clock(8.mhz()).sysclk(108.mhz()).freeze();
+    let mut afio = dp.AFIO.constrain(&mut rcu);
 
     let gpioa = dp.GPIOA.split(&mut rcu);
     let gpiob = dp.GPIOB.split(&mut rcu);
 
     let lcd_pins = lcd_pins!(gpioa, gpiob);
-    let mut lcd = Lcd::new(dp.SPI0, lcd_pins, &mut rcu);
+    let mut lcd = Lcd::new(dp.SPI0, lcd_pins, &mut afio, &mut rcu);
     let (width, height) = (lcd.width() as i32, lcd.height() as i32);
 
     // Clear screen

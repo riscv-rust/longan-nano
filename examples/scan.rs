@@ -66,10 +66,11 @@ fn main() -> ! {
 
     // Configure clocks
     let mut rcu = p.RCU.configure().freeze();
+    let mut afio = p.AFIO.constrain(&mut rcu);
 
     // Configure UART for stdout
     let gpioa = p.GPIOA.split(&mut rcu);
-    longan_nano::stdout::configure(p.USART0, gpioa.pa9, gpioa.pa10, 115_200.bps(), &mut rcu);
+    longan_nano::stdout::configure(p.USART0, gpioa.pa9, gpioa.pa10, 115_200.bps(), &mut afio, &mut rcu);
 
     sprintln!("scan started");
 

@@ -8,6 +8,7 @@ use gd32vf103xx_hal::{
     gpio::{Active, gpioa::{PA10, PA9}},
     time::Bps,
     rcu::Rcu,
+    afio::Afio,
     pac::USART0,
     prelude::*
 };
@@ -43,7 +44,7 @@ impl fmt::Write for SerialWrapper {
 /// Configures stdout
 pub fn configure<X, Y>(
     uart: USART0, tx: PA9<X>, rx: PA10<Y>,
-    baud_rate: Bps, rcu: &mut Rcu
+    baud_rate: Bps, afio: &mut Afio, rcu: &mut Rcu
 ) where X: Active, Y: Active
 {
     let tx = tx.into_alternate_push_pull();
@@ -53,7 +54,7 @@ pub fn configure<X, Y>(
         parity: Parity::ParityNone,
         stopbits: StopBits::STOP1
     };
-    let serial = Serial::usart0(uart, (tx, rx), config, rcu);
+    let serial = Serial::new(uart, (tx, rx), config, afio, rcu);
     let (tx, _) = serial.split();
 
     interrupt::free(|_| {
