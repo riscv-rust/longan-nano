@@ -50,6 +50,7 @@ Unfortunately, some versions of this chip shipped with a buggy bootloader and it
 the correct parameters to flash it sucessfully. As of May 2020, the most recent version of 
 [dfu-util](http://dfu-util.sourceforge.net/) from the git repository contains a workaround. 
 Make sure you use an up-to-date version.
+See [this issue](https://github.com/riscv-rust/longan-nano/issues/5) for details.
 
 
 Steps to flash an example via DFU:
