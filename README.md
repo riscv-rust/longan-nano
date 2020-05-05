@@ -22,14 +22,69 @@ rustup target add riscv32imac-unknown-none-elf
 
 - RISC-V toolchain ([e.g. from SiFive](https://static.dev.sifive.com/dev-tools/riscv64-unknown-elf-gcc-8.1.0-2019.01.0-x86_64-linux-ubuntu14.tar.gz))
 
-- [openocd for GD32VF103](https://github.com/riscv-mcu/riscv-openocd)
+One of:
 
-### Running the examples
+- [dfu-util](http://dfu-util.sourceforge.net/)
+- [openocd for GD32VF103](https://github.com/riscv-mcu/riscv-openocd)
+- [RV-LINK](https://gitee.com/zoomdy/RV-LINK)
+
+### Building 
 
 If you have a GD32VF103C**B** chip on your board, edit `.cargo/config` and replace
 `memory-c8.x` with `memory-cb.x`.
 
-Start openocd:
+To build all the provided examples run 
+```
+cargo build --examples --release --features=lcd
+```
+
+### Using dfu-util for Flashing
+
+The GD32VF103 contains a [DFU](https://www.usb.org/sites/default/files/DFU_1.1.pdf) 
+compatible bootloader which allows to program the firmware of your longan-nano without 
+additional hardware like a JTAG adapter; instead just using an ordenary USB-C cable. 
+You can use [dfu-util](http://dfu-util.sourceforge.net/) or the vendor supplied tool to 
+flash the firmware. 
+
+Unfortunately, some versions of this chip shipped with a buggy bootloader and it won't report 
+the correct parameters to flash it sucessfully. As of May 2020, the most recent version of 
+[dfu-util](http://dfu-util.sourceforge.net/) from the git repository contains a workaround. 
+Make sure you use an up-to-date version.
+
+
+Steps to flash an example via DFU:
+
+1) Extract the binary 
+
+```sh
+riscv-nuclei-elf-objcopy -O binary target/riscv32imac-unknown-none-elf/release/blinky firmware.bin
+```
+
+2) Flash using `dfu-util`:
+
+Keep the BOOT0 button pressed while power-up or while pressing and releaseing the reset button. Then 
+run 
+
+```sh
+dfu-util -a 0 -s 0x08000000:leave -D firmware.bin
+```
+
+Ensure that dfu-util uses a page size of 1024; either because your GD32VF103 has 
+a bootloader without the the aforementioned bug, or because the output reads
+
+```
+[...]
+Device returned transfer size 2048
+DfuSe interface name: "Internal Flash  "
+Found GD32VF103, which reports a bad page size and count for its internal memory.
+Fixed layout based on part number: page size 1024, count 128.
+Downloading to address = 0x08000000, size = 23784
+[...]
+```
+
+### Using OpenOCD for Flashing and Debugging
+
+Start openocd assuming you have Sipeed JTAG adapter:
 ```sh
 /path/to/openocd -f sipeed-jtag.cfg -f openocd.cfg
 ```
