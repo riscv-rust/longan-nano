@@ -35,7 +35,7 @@ If you have a GD32VF103C**B** chip on your board, edit `.cargo/config` and repla
 
 To build all the provided examples run 
 ```
-cargo build --examples --release --features=lcd
+cargo build --examples --release --all-features
 ```
 
 ### Using dfu-util for Flashing
