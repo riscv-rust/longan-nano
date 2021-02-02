@@ -4,9 +4,7 @@
 use panic_halt as _;
 
 use riscv_rt::entry;
-use gd32vf103xx_hal as hal;
-use hal::pac as pac;
-use gd32vf103xx_hal::prelude::*;
+use longan_nano::hal::{pac, prelude::*};
 use longan_nano::sprintln;
 
 #[entry]

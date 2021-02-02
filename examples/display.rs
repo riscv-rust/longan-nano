@@ -8,8 +8,7 @@ use embedded_graphics::pixelcolor::Rgb565;
 use embedded_graphics::prelude::*;
 use embedded_graphics::primitives::Rectangle;
 use embedded_graphics::{primitive_style, text_style};
-use gd32vf103xx_hal::pac;
-use gd32vf103xx_hal::prelude::*;
+use longan_nano::hal::{pac, prelude::*};
 use longan_nano::{lcd, lcd_pins};
 use riscv_rt::entry;
 

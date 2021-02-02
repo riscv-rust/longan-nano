@@ -4,8 +4,7 @@
 extern crate panic_halt;
 
 use riscv_rt::entry;
-use longan_nano::hal::prelude::*;
-use longan_nano::hal::pac::Peripherals;
+use longan_nano::hal::{pac, prelude::*};
 use longan_nano::{sprint, sprintln};
 
 #[inline(never)]
@@ -62,7 +61,7 @@ enum ScanState {
 
 #[entry]
 fn main() -> ! {
-    let p = Peripherals::take().unwrap();
+    let p = pac::Peripherals::take().unwrap();
 
     // Configure clocks
     let mut rcu = p.RCU.configure().freeze();
