@@ -1,0 +1,33 @@
+on:
+  push:
+    branches: [ staging, trying, master ]
+  pull_request:
+
+name: Continuous integration
+
+jobs:
+  ci-linux:
+    runs-on: ubuntu-20.04
+    continue-on-error: ${{ matrix.experimental || false }}
+    strategy:
+      matrix:
+        rust: [stable]
+
+        include:
+          # Test nightly but don't fail
+          - rust: nightly
+            experimental: true
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: ${{ matrix.rust }}
+          override: true
+      - name: Install Rust target
+        run: rustup target install --toolchain=${{ matrix.rust }} riscv32imac-unknown-none-elf
+
+      - name: Check code
+        run: cargo check --all-features
+      - name: Check examples
+        run: cargo build --target riscv32imac-unknown-none-elf --examples --all-features --release
