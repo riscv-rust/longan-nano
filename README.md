@@ -1,6 +1,6 @@
 [![crates.io](https://img.shields.io/crates/d/longan-nano.svg)](https://crates.io/crates/longan-nano)
 [![crates.io](https://img.shields.io/crates/v/longan-nano.svg)](https://crates.io/crates/longan-nano)
-[![Build Status](https://travis-ci.org/riscv-rust/longan-nano.svg?branch=master)](https://travis-ci.org/riscv-rust/longan-nano)
+![Build Status](https://github.com/riscv-rust/longan-nano/workflows/CI/badge.svg)
 
 # `longan-nano`
 
