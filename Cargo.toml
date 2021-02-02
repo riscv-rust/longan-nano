@@ -1,6 +1,6 @@
 [package]
 name = "longan-nano"
-version = "0.1.1"
+version = "0.2.0"
 authors = ["Vadim Kaushan <admin@disasm.info>"]
 repository = "https://github.com/riscv-rust/longan-nano"
 categories = ["embedded", "hardware-support", "no-std"]
