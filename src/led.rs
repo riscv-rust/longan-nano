@@ -3,7 +3,7 @@
 //! - Red = PC13
 //! - Green = PA1
 //! - Blue = PA2
-use embedded_hal::digital::v2::OutputPin;
+use embedded_hal::digital::v2::{OutputPin, StatefulOutputPin};
 use gd32vf103xx_hal::gpio::gpioc::PC13;
 use gd32vf103xx_hal::gpio::gpioa::{PA1, PA2};
 use gd32vf103xx_hal::gpio::{Output, PushPull, Active};
@@ -66,6 +66,9 @@ pub trait Led {
 
     /// Turns the LED on
     fn on(&mut self);
+
+    /// Checks the LED status
+    fn is_on(&mut self) -> bool;
 }
 
 impl Led for RED {
@@ -75,6 +78,10 @@ impl Led for RED {
 
     fn on(&mut self) {
         self.port.set_low().unwrap();
+    }
+
+    fn is_on(&mut self) -> bool {
+        self.port.is_set_low().unwrap()
     }
 }
 
@@ -86,6 +93,10 @@ impl Led for GREEN {
     fn on(&mut self) {
         self.port.set_low().unwrap();
     }
+
+    fn is_on(&mut self) -> bool {
+        self.port.is_set_low().unwrap()
+    }
 }
 
 impl Led for BLUE {
@@ -95,5 +106,9 @@ impl Led for BLUE {
 
     fn on(&mut self) {
         self.port.set_low().unwrap();
+    }
+
+    fn is_on(&mut self) -> bool {
+        self.port.is_set_low().unwrap()
     }
 }

@@ -20,6 +20,7 @@ st7735-lcd = { version = "0.7", optional = true }
 riscv-rt = "0.8.0"
 panic-halt = "0.2.0"
 embedded-graphics = "0.6"
+ushell = "0.3.3"
 
 [features]
 lcd = ["st7735-lcd"]
