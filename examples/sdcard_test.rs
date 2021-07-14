@@ -33,51 +33,52 @@ fn main() -> ! {
         sprintln!("Failed to initialize sdcard.");
     } else {
         sprintln!("OK");
-        sprint!("SD Card Capacity: ");
-        if let Ok(size) = sdcard.device().card_size_bytes() {
-            sprintln!("{} MB", size / 1000 / 1000);
-            // open the first partition
-            sprintln!("Partition 0:");
-            if let Ok(mut volume) = sdcard.get_volume(VolumeIdx(0)) {
-                // list files in root dir
-                if let Ok(root_dir) = sdcard.open_root_dir(&volume) {
-                    if let Err(_) = sdcard.iterate_dir(&volume, &root_dir, | entry | {
-                        sprintln!("{: >5}B  {}", entry.size, entry.name);
-                    }) {
-                        sprintln!("Error while iterating over files.");
-                    }
-                    if let Ok(_) = sdcard.find_directory_entry(&volume, &root_dir, "W_TST.TXT") {
-                        // if a file with the name W_TST.TXT is present, do a write test
-                        write_test(&mut sdcard, &mut volume, &root_dir);
-                    }
-                } else {
-                    sprintln!("Could not open root directory.");
-                }
-            } else {
-                sprintln!("Could not open partition 0.");
-            }
-        } else {
-            sprintln!("Failed to read card size.");
+
+        let size = sdcard.device().card_size_bytes().unwrap();
+        sprintln!("SD Card Capacity: {} MB", size / 1000 / 1000);
+
+        // open the first partition
+        sprintln!("Partition 0:");
+        let mut volume = sdcard.get_volume(VolumeIdx(0)).unwrap();
+
+        // list files in root dir
+        let root_dir = sdcard.open_root_dir(&volume).unwrap();
+        sdcard.iterate_dir(&volume, &root_dir, | entry | {
+            sprintln!("{: >5}B  {}", entry.size, entry.name);
+        }).unwrap();
+
+        // if a file with the name SDTST.TXT is present, do a read/write test
+        if let Ok(_) = sdcard.find_directory_entry(&volume, &root_dir, "SDTST.TXT") {
+            read_write_test(&mut sdcard, &mut volume, &root_dir);
         }
     }
+    sprintln!("Done");
 
-    sprintln!("done.");
     loop { }
 }
 
-fn write_test(sdcard: &mut SdCard, volume: &mut Volume, dir: &Directory) {
+fn read_write_test(sdcard: &mut SdCard, volume: &mut Volume, dir: &Directory) {
     sprint!("Write test: ");
-    if let Ok(mut file) = sdcard.open_file_in_dir(volume, dir, "W_TST.CSV", embedded_sdmmc::Mode::ReadWriteCreateOrTruncate) {
-        let data = "1,2,3,4,20";
-        if let Ok(size_written) = sdcard.write(volume, &mut file, data.as_bytes()) {
-            sprintln!("Success (Wrote {}B)", size_written);
+    let mut file = sdcard.open_file_in_dir(volume, dir, "SDTST.CSV", embedded_sdmmc::Mode::ReadWriteCreateOrTruncate).unwrap();
+    let data = "1,2,3,4,20";
+    if let Ok(size_written) = sdcard.write(volume, &mut file, data.as_bytes()) {
+        sprintln!("Success (Wrote {} bytes)", size_written);
+    } else {
+        sprintln!("Failed");
+    }
+    sdcard.close_file(volume, file).unwrap();
+
+    sprint!("Read test: ");
+    let mut file = sdcard.open_file_in_dir(volume, dir, "SDTST.CSV", embedded_sdmmc::Mode::ReadOnly).unwrap();
+    let mut buffer: [u8; 32] = [0; 32];
+    if let Ok(size_read) = sdcard.read(volume, &mut file, &mut buffer) {
+        if size_read == data.len() && buffer[0..size_read].eq(data.as_bytes()) {
+            sprintln!("Success (Read same {} bytes)", size_read);
         } else {
-            sprintln!("Failed");
-        }
-        if let Err(_) = sdcard.close_file(volume, file) {
-            sprintln!("Could not close file.");
+            sprintln!("Content differs.");
         }
     } else {
-        sprintln!("Could not open file for writing.");
+        sprintln!("Failed");
     }
+    sdcard.close_file(volume, file).unwrap();
 }
