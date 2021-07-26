@@ -8,7 +8,7 @@ use panic_halt as _;
 
 use riscv_rt::entry;
 use longan_nano::hal::{pac, prelude::*};
-use longan_nano::{sdcard, sprint, sprintln};
+use longan_nano::{sdcard, sdcard_pins, sprint, sprintln};
 
 #[entry]
 fn main() -> ! {
@@ -26,7 +26,8 @@ fn main() -> ! {
     longan_nano::stdout::configure(dp.USART0, gpioa.pa9, gpioa.pa10, 115_200.bps(), &mut afio, &mut rcu);
 
     let gpiob = dp.GPIOB.split(&mut rcu);
-    let mut sdcard = sdcard::configure(dp.SPI1, gpiob, &mut rcu);
+    let sdcard_pins = sdcard_pins!(gpiob);
+    let mut sdcard = sdcard::configure(dp.SPI1, sdcard_pins, sdcard::SdCardFreq::Safe, &mut rcu);
 
     sprint!("Initializing SD card ... ");
     if let Err(_) = sdcard.device().init() {

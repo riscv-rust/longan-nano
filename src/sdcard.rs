@@ -1,13 +1,31 @@
 //! On-board SD Card Slot
 
 use embedded_hal::digital::v2::OutputPin;
-use gd32vf103xx_hal::gpio::gpiob::{PB12, PB13, PB14, PB15, Parts};
+use gd32vf103xx_hal::gpio::gpiob::{PB12, PB13, PB14, PB15};
 use gd32vf103xx_hal::gpio::{Alternate, Floating, Input, Output, PushPull};
 use gd32vf103xx_hal::pac::{SPI1};
 use gd32vf103xx_hal::rcu::Rcu;
 use gd32vf103xx_hal::spi::{Spi, MODE_0};
-use gd32vf103xx_hal::time::U32Ext;
+use gd32vf103xx_hal::time::{Hertz, U32Ext};
 use embedded_sdmmc::{Controller, SdMmcSpi, TimeSource, Timestamp};
+
+/// Sets up all the needed GPIO pins for the sdcard
+///
+/// ```
+/// let gpiob = dp.GPIOB.split(&mut rcu);
+/// let sdcard_pins = sdcard_pins!(gpiob);
+/// ```
+#[macro_export]
+macro_rules! sdcard_pins {
+    ($gpiob:ident) => {{
+        $crate::sdcard::SdCardPins {
+            miso: $gpiob.pb14.into_floating_input(),
+            mosi: $gpiob.pb15.into_alternate_push_pull(),
+            sck: $gpiob.pb13.into_alternate_push_pull(),
+            cs: $gpiob.pb12.into_push_pull_output(),
+        }
+    }};
+}
 
 type SckPin = PB13<Alternate<PushPull>>;
 type MisoPin = PB14<Input<Floating>>;
@@ -23,21 +41,39 @@ pub type SdCardSpi = SdMmcSpi<Spi1, CsPin>;
 /// A type based on embedded_sdmmc::Controller.
 pub type SdCard = Controller<SdCardSpi, FakeTimeSource>;
 
+pub struct SdCardPins {
+    pub miso: MisoPin,
+    pub mosi: MosiPin,
+    pub sck: SckPin,
+    pub cs: CsPin,
+}
+
+pub enum SdCardFreq {
+    /// Should work for all cards
+    Safe,
+    /// May not work for some cards
+    Fast,
+    /// Specify SPI frequency
+    Custom(Hertz)
+}
+
 /// Constructs SD Card driver from the required components.
-pub fn configure(spi: SPI1, gpiob: Parts, rcu: &mut Rcu) -> SdCard {
-    let miso = gpiob.pb14.into_floating_input();
-    let mosi = gpiob.pb15.into_alternate_push_pull();
-    let sck = gpiob.pb13.into_alternate_push_pull();
-    let mut cs = gpiob.pb12.into_push_pull_output();
+pub fn configure(spi: SPI1, pins: SdCardPins, freq: SdCardFreq, rcu: &mut Rcu) -> SdCard {
+    let freq = match freq {
+        SdCardFreq::Safe => 200.khz().into(), // using 300 kHz here because the sdcard init needs 100 to 400 kHz (see SdMmcSpi.init)
+        SdCardFreq::Fast => 27.mhz().into(),  // this is the max SPI frequency according to datasheet
+        SdCardFreq::Custom(val) => val,
+    };
 
     let spi1 = Spi::spi1(
         spi,
-        (sck, miso, mosi),
+        (pins.sck, pins.miso, pins.mosi),
         MODE_0,
-        300.khz(), // using 300 kHz here because the sdcard init needs 100 to 400 kHz (see SdMmcSpi.init)
+        freq,
         rcu,
     );
 
+    let mut cs = pins.cs;
     cs.set_high().unwrap();
 
     let sdmmcspi = SdMmcSpi::new(spi1, cs);
