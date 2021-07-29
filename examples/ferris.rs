@@ -7,8 +7,7 @@ use embedded_graphics::image::{Image, ImageRaw};
 use embedded_graphics::pixelcolor::raw::LittleEndian;
 use embedded_graphics::pixelcolor::Rgb565;
 use embedded_graphics::prelude::*;
-use embedded_graphics::primitive_style;
-use embedded_graphics::primitives::Rectangle;
+use embedded_graphics::primitives::{Rectangle, PrimitiveStyle};
 use longan_nano::hal::{pac, prelude::*};
 use longan_nano::{lcd, lcd_pins};
 use riscv_rt::entry;
@@ -36,13 +35,13 @@ fn main() -> ! {
     let (width, height) = (lcd.size().width as i32, lcd.size().height as i32);
 
     // Clear screen
-    Rectangle::new(Point::new(0, 0), Point::new(width - 1, height - 1))
-        .into_styled(primitive_style!(fill_color = Rgb565::BLACK))
+    Rectangle::new(Point::new(0, 0), Size::new(width as u32 - 1, height as u32 - 1))
+        .into_styled(PrimitiveStyle::with_fill(Rgb565::BLACK))
         .draw(&mut lcd)
         .unwrap();
 
     // Load Image Data
-    let raw_image: ImageRaw<Rgb565, LittleEndian> = ImageRaw::new(&FERRIS, 86, 64);
+    let raw_image: ImageRaw<Rgb565, LittleEndian> = ImageRaw::new(&FERRIS, 86);
     Image::new(&raw_image, Point::new(width / 2 - 43, height / 2 - 32))
         .draw(&mut lcd)
         .unwrap();
