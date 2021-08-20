@@ -36,7 +36,7 @@ fn main() -> ! {
     let (width, height) = (lcd.size().width as i32, lcd.size().height as i32);
 
     // Clear screen
-    Rectangle::new(Point::new(0, 0), Size::new(width as u32 - 1, height as u32 - 1))
+    Rectangle::new(Point::new(0, 0), Size::new(width as u32, height as u32))
         .into_styled(PrimitiveStyle::with_fill(Rgb565::BLACK))
         .draw(&mut lcd)
         .unwrap();
