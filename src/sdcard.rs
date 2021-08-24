@@ -57,14 +57,18 @@ pub enum SdCardFreq {
     Custom(Hertz)
 }
 
+impl From<SdCardFreq> for Hertz {
+    fn from(value: SdCardFreq) -> Hertz {
+        match value {
+            SdCardFreq::Safe => 200.khz().into(), // using 300 kHz here because the sdcard init needs 100 to 400 kHz (see SdMmcSpi.init)
+            SdCardFreq::Fast => 27.mhz().into(),  // this is the max SPI frequency according to datasheet
+            SdCardFreq::Custom(val) => val,
+        }
+    }
+}
+
 /// Constructs SD Card driver from the required components.
 pub fn configure(spi: SPI1, pins: SdCardPins, freq: SdCardFreq, rcu: &mut Rcu) -> SdCard {
-    let freq = match freq {
-        SdCardFreq::Safe => 200.khz().into(), // using 300 kHz here because the sdcard init needs 100 to 400 kHz (see SdMmcSpi.init)
-        SdCardFreq::Fast => 27.mhz().into(),  // this is the max SPI frequency according to datasheet
-        SdCardFreq::Custom(val) => val,
-    };
-
     let spi1 = Spi::spi1(
         spi,
         (pins.sck, pins.miso, pins.mosi),
