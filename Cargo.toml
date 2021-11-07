@@ -26,7 +26,7 @@ embedded-sdmmc = { version = "0.3.0", optional = true }
 riscv-rt = "0.8.0"
 panic-halt = "0.2.0"
 embedded-graphics = "0.7.1"
-ushell = "0.3.3"
+ushell = "0.3.5"
 
 [features]
 lcd = ["st7735-lcd"]
