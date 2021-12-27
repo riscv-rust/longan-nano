@@ -27,6 +27,7 @@ One of:
 - [dfu-util](http://dfu-util.sourceforge.net/)
 - [openocd for GD32VF103](https://github.com/riscv-mcu/riscv-openocd)
 - [RV-LINK](https://gitee.com/zoomdy/RV-LINK)
+- [stm32flash](https://sourceforge.net/projects/stm32flash/)
 
 When using `dfu-util`, the entire RISC-V toolchain is not necessary. Only `objcopy` from [riscv-binutils-gdb](https://github.com/sifive/riscv-binutils-gdb.git) is needed.
 
@@ -198,6 +199,23 @@ of the green LED:
 | Slow flashing, on for 500ms, off for 500ms | GDB is connected and the debugged MCU is in halt state |
 | Fast blinking, on for 100ms, off for 100ms | GDB is connected, and the debugged MCU is running      |
 | Long pulse, on for 900ms, off for 100ms    | RV-LINK has failed. Retry after resetting RV-LINK      |
+
+
+## Using serial for Flashing
+
+Using a TTL-to-USB adapter, one can flash the firmware to the device over a serial connection:
+
+```
+$ stm32flash -g 0x08000000 -b 115200 -w firmware.bin /dev/ttyUSB0
+```
+
+which sets the base address (`-g 0x08000000`) for the firmware to the start of main flash.
+
+The baud rate (`-b 115200`), firmware image (`-w firmware.bin`), and serial port (`/dev/ttyUSB0`) are set next.
+
+The serial port may vary machine to machine, so select the port that makes sense.
+
+Make sure the device is writeable by the current user, or run `stm32flash` as root.
 
 ## License
 
