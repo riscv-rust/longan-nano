@@ -57,7 +57,7 @@ pub fn configure<X, Y>(
     let serial = Serial::new(uart, (tx, rx), config, afio, rcu);
     let (tx, _) = serial.split();
 
-    interrupt::free(|_| {
+    interrupt::free(|| {
         unsafe {
             STDOUT.replace(SerialWrapper(tx));
         }
@@ -66,7 +66,7 @@ pub fn configure<X, Y>(
 
 /// Writes string to stdout
 pub fn write_str(s: &str) {
-    interrupt::free(|_| unsafe {
+    interrupt::free(|| unsafe {
         if let Some(stdout) = STDOUT.as_mut() {
             let _ = stdout.write_str(s);
         }
@@ -75,7 +75,7 @@ pub fn write_str(s: &str) {
 
 /// Writes formatted string to stdout
 pub fn write_fmt(args: fmt::Arguments) {
-    interrupt::free(|_| unsafe {
+    interrupt::free(|| unsafe {
         if let Some(stdout) = STDOUT.as_mut() {
             let _ = stdout.write_fmt(args);
         }
