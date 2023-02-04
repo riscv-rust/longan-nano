@@ -20,6 +20,7 @@ nb = "1.0.0"
 riscv = { version = "0.10.1", features = ["critical-section-single-hart"] }
 st7735-lcd = { version = "0.8.1", optional = true }
 embedded-sdmmc = { version = "0.4.0", optional = true }
+usb-device = { version = "0.2.9", optional = true }
 
 [dependencies.gd32vf103xx-hal]
 git = "https://github.com/katyo/gd32vf103xx-hal"
@@ -29,11 +30,16 @@ branch = "upcoming"
 riscv-rt = "0.11.0"
 panic-halt = "0.2.0"
 embedded-graphics = "0.7.1"
-ushell = "0.3.5"
+usbd-serial = "0.1.1"
+
+[dev-dependencies.ushell]
+git = "https://github.com/katyo/ushell"
+branch = "upcoming"
 
 [features]
 lcd = ["st7735-lcd"]
 sdcard = ["embedded-sdmmc"]
+usb = ["gd32vf103xx-hal/usb_fs", "usb-device"]
 
 [[example]]
 name = "display"
@@ -47,3 +53,10 @@ required-features = ["lcd"]
 name = "sdcard_test"
 required-features = ["sdcard"]
 
+[[example]]
+name = "led_shell_usb"
+required-features = ["usb"]
+
+[[example]]
+name = "serial_usb"
+required-features = ["usb"]
