@@ -13,3 +13,6 @@ pub mod stdout;
 #[cfg(feature = "sdcard")]
 #[cfg_attr(docsrs, doc(cfg(feature = "sdcard")))]
 pub mod sdcard;
+#[cfg(feature = "usb")]
+#[cfg_attr(docsrs, doc(cfg(feature = "usb")))]
+pub mod usb;
