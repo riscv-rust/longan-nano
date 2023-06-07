@@ -15,12 +15,18 @@ rustdoc-args = ["--cfg", "docsrs"]
 default-target = "x86_64-unknown-linux-gnu"
 
 [dependencies]
-gd32vf103xx-hal = "0.5.0"
 embedded-hal = "0.2.6"
 nb = "1.0.0"
 riscv = "0.10.1"
 st7735-lcd = { version = "0.8.1", optional = true }
 embedded-sdmmc = { version = "0.3.0", optional = true }
+
+[dependencies.gd32vf103xx-hal]
+version = "0.5.0"
+# Remove if/when upstream is updated
+git = "https://github.com/rmsyn/gd32vf103xx-hal"
+branch = "fixup/update"
+features = ["rt"]
 
 [dev-dependencies]
 riscv-rt = "0.11.0"
