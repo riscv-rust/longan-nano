@@ -2,6 +2,7 @@
 runner = 'riscv64-unknown-elf-gdb -x openocd.gdb'
 rustflags = [
   "-C", "link-arg=-Tmemory-c8.x",
+  "-C", "link-arg=-Tdevice.x",
   "-C", "link-arg=-Tlink.x",
 ]
 
