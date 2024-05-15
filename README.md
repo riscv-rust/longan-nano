@@ -29,18 +29,7 @@ One of:
 - [RV-LINK](https://gitee.com/zoomdy/RV-LINK)
 - [stm32flash](https://sourceforge.net/projects/stm32flash/)
 
-When using `dfu-util`, the entire RISC-V toolchain is not necessary. Only `objcopy` from [riscv-binutils-gdb](https://github.com/sifive/riscv-binutils-gdb.git) is needed.
-
-It can be compiled with the following commands:
-
-```
-git clone https://github.com/sifive/riscv-binutils-gdb.git
-cd riscv-binutils-gdb
-./configure --target=riscv64-unknown-elf --disable-werror --with-python=no --disable-gdb --disable-sim --disable-libdecnumber --disable-libreadline --with-expat=yes --with-mpc=no --with-mpfr=no --with-gmp=no
-make
-```
-
-It will provide the `binutils/objcopy` tool needed to convert the compiled Rust binary into `firmware.bin` (note: this works on arm64 as well).
+When using `dfu-util`, the RISC-V toolchain is not necessary. Only `rust-objcopy` from [cargo-binutils](https://github.com/rust-embedded/cargo-binutils) is needed.
 
 ### Building 
 
@@ -71,7 +60,7 @@ Steps to flash an example via DFU:
 1) Extract the binary 
 
 ```sh
-riscv-nuclei-elf-objcopy -O binary target/riscv32imac-unknown-none-elf/release/blinky firmware.bin
+rust-objcopy -O binary target/riscv32imac-unknown-none-elf/release/examples/blinky firmware.bin
 ```
 
 2) Flash using `dfu-util`:
