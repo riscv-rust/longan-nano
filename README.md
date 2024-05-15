@@ -44,7 +44,7 @@ It will provide the `binutils/objcopy` tool needed to convert the compiled Rust 
 
 ### Building 
 
-If you have a GD32VF103C**B** chip on your board, edit `.cargo/config` and replace
+If you have a GD32VF103C**B** chip on your board, edit `.cargo/config.toml` and replace
 `memory-c8.x` with `memory-cb.x`.
 
 To build all the provided examples run 
@@ -179,7 +179,7 @@ To flash the firmware, execute `load` in GDB:
 ```
 
 To improve your workflow, you can put the aforementioned GDB commands in
-a `debug.gdb` file and add these lines to `.cargo/config`:
+a `debug.gdb` file and add these lines to `.cargo/config.toml`:
 
 ```
 [target.riscv32imac-unknown-none-elf]
