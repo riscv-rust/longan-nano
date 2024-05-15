@@ -44,3 +44,10 @@ required-features = ["lcd"]
 name = "sdcard_test"
 required-features = ["sdcard"]
 
+[profile.release]
+opt-level = "z"  # Optimize for size.
+codegen-units = 1
+lto = true
+
+[profile.dev]
+opt-level = "z"  # Optimize for size.
