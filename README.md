@@ -42,6 +42,13 @@ make
 
 It will provide the `binutils/objcopy` tool needed to convert the compiled Rust binary into `firmware.bin` (note: this works on arm64 as well).
 
+Option B - Install prebuilt toolchain (easier):
+
+For Ubuntu/Debian:
+```
+sudo apt-get install gcc-riscv64-unknown-elf
+```
+
 ### Building 
 
 If you have a GD32VF103C**B** chip on your board, edit `.cargo/config` and replace
@@ -73,6 +80,12 @@ Steps to flash an example via DFU:
 ```sh
 riscv-nuclei-elf-objcopy -O binary target/riscv32imac-unknown-none-elf/release/blinky firmware.bin
 ```
+
+If using prebuilt toolchain
+```sh
+riscv64-unknown-elf-objcopy -O binary target/riscv32imac-unknown-none-elf/release/blinky firmware.bin
+```
+
 
 2) Flash using `dfu-util`:
 
