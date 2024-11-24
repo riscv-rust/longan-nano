@@ -7,11 +7,3 @@ rustflags = [
 
 [build]
 target = "riscv32imac-unknown-none-elf"
-
-[profile.release]
-opt-level = "z"  # Optimize for size.
-codegen-units = 1
-lto = true
-
-[profile.dev]
-opt-level = "z"  # Optimize for size.
